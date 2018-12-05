@@ -1,7 +1,7 @@
 ---
 title: "Abacavirinol"
-author: "Put your name here!"
-date: "put the date here"
+author: "Joseph Nielsen"
+date: "12/5/2018"
 output: html_document
 ---
 
@@ -9,8 +9,11 @@ output: html_document
 require(tidyverse)
 require(tigerstats)
 abac <-read.csv(file="abacavirinol.csv",header=TRUE)
+female <- filter(abac,sex=="F")
+male <-filter(abac,sex=="M")
+drugs <- filter(abac,Ivdrug=="user")
+LGBT <-filter(abac,LBGT=="yes")
 ```
-
 # Introduction
 
 <!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer?.  If you skimp in this section expect to be marked down in your grade. Paint a picture of the project a couple of paragraphs is expected!-->
@@ -20,26 +23,236 @@ A new  preventative aides (abacavirinol) is under test in clinical trials. Analy
 # Methods
 
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method. Discuss what data manipulations may be needed for example subsetting or other binning procedures and what sort of graphical displays and inferential tools will be used!-->
+We are running the data based on different groups; the whole, Drug users, male, female, and the LGBT. We want to see if the use of vaccines containing ALVAC-HIV and AIDSVAX B/E or, placebo-controlled is more useful in preventing aids. To do this we will run a series of test to come to a conclusion. We will look at a basic bar graph to see the information easily. Since we don't want to base our conclusion on a basic bar graph we will run a basic numerical test. Then after all that we want to make sure we see all the information we run a chisqtest and a fisher.t test. Now we will do this for all the groups listed above to see if our conclusion that we got as a whole will apply to each subdivision, just because something seems like it works for the whole, it might not work for everyone. 
 
-#Results
+###Everyone
+
+##Results
 
 <!--Divide this section into two sub-sections:  One for your descriptive  results and one for your inferential results.!-->
+
+This is the results we got for the whole, we have two subdivisions for the results. First the graphical data containing a bar graph. Then the numerical data where we have the basic numerical data and some more advanced inferential data I.E a chisqtest and a fisher.t test.
 
 ## Descriptive Results
 
 ### Graphical Descriptive Results
 
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
+  
+```{r}
+results<- xtabs(~infected+treatment,data=abac)
+barchartGC(results,type = "percent")
+```
+
+Based on this graph there is a lot less people who took the drug and have aids. The highest percentage of people who have aids took the placebo. While the people who dont have aids is about even for the drug versus the placebo.
 
 ### Numerical Descriptive Results
 
 <!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
+```{r}
+colPerc(results)
+rowPerc(results)
+```
+
+According to these statstical results from colperc it shows that 4.04% that took the drug ended up with aids, while 95.96% didn't. Then 5.54% who took the placebo ended up with aids while 94.46% didnt. Then in the rowperc test it shows that 40.93% of people with aids took the drug while 59.07% of people took the placebo. Then 49.10% of people who dont have aids took the drug while 50.9% took the placebo.
+
 ## Inferential Results
 
 <!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
+```{r}
+chisqtestGC(results, graph = TRUE)
+fisher.test(results)
+```
+
+According to the chi-squared test it shows that 97 people who took the drug ended up with aids while 2303 did not have aids. Then 140 people who took the placebo ended up with aids while 2387 did not. The chi-squared test also gave us a p-value of 0.0168 which is enough to reject the null hypothesis. Although, we want to make sure of the p-value so that's where the fisher test come in and gives us a p-value of 0.0163 which means we can reject the null hypothesis.
 
 
 # Discussion and Conclusion
 
 <!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
+
+If we just look at the bar graph it seems that the drug works and works quite well, with a almost 15% difference. Although, we need to take a closer look at the data to make sure what we are seeing is really true, because often times graphs can be very misleading. According to very basic statistical data that 40.93% of people with aids took the drug while 59.07% of people took the placebo. Now that's roughly about 18% difference. Let's dig a little bit deeper 97 out of 2,400 people who took the drug ended up with aids. While 140 out of 2527 people who took the placebo ended up with aids. Now that shows that the drug is working right? Lets keep going according to the Chi-squared test we have a p-value of 0.0168 and the fisher test gives off a p-value of 0.0163. Both these values are far from the .05 that means we can reject the null hypothesis. Which means the drug works.
+
+##Drug Users
+
+#Results
+
+This is the results we got for the drug users, we have two subdivisions for the results. First the graphical data containing a bar graph. Then the numerical data where we have the basic numerical data and some more advanced inferential data I.E a chisqtest and a fisher.t test.
+
+## Descriptive Results
+
+### Graphical Descriptive Results
+
+
+  
+```{r}
+resultsDrug<- xtabs(~infected+treatment,data=drugs)
+barchartGC(resultsDrug,type = "percent")
+```
+
+Based on this graph of the drug users there is way less people who took the drug and have aids. The highest percentage of people who have aids took the placebo. While the people who dont have aids is about a 5% diffrence for the drug versus the placebo. 
+
+### Numerical Descriptive Results
+
+
+
+```{r}
+colPerc(resultsDrug)
+rowPerc(resultsDrug)
+```
+
+According to these statstical results from colperc it shows that 3.17% that took the drug ended up with aids, while 96.83% didn't. Then 7.4% who took the placebo ended up with aids while 92.6% didnt. Then in the rowperc test it shows that 25.64% of people with aids took the drug while 74.36% of people took the placebo. Then 45.66% of people who dont have aids took the drug while 54.34% took the placebo.
+
+## Inferential Results
+
+
+```{r}
+chisqtestGC(resultsDrug, graph = TRUE)
+fisher.test(resultsDrug)
+```
+
+According to the chi-squared test it shows that 10 people who took the drug ended up with aids while 305 did not have aids. Then 29 people who took the placebo ended up with aids while 363 did not. The chi-squared test also gave us a p-value of 0.0227 which is enough to reject the null hypothesis. Although, we want to make sure of the p-value so that's where the fisher test come in and gives us a p-value of 0.0192 which means we can reject the null hypothesis.
+
+# Discussion and Conclusion
+
+If we just look at the bar graph it seems that the drug works and works quite well, even better than the graph of the whole. Although, we need to take a closer look at the data to make sure what we are seeing is really true, because often times graphs can be very misleading. According to very basic statistical data shows that 25.64% of people with aids took the drug while 74.36%% of people took the placebo. Now that's roughly about 50% difference. Let's dig a little bit deeper 10 out of 305 people who took the drug ended up with aids. While 29 out of 392 people who took the placebo ended up with aids. Now that shows that the drug is working right? Lets keep going according to the Chi-squared test we have a p-value of 0.0227 and the fisher test gives off a p-value of 0.0192. Both these values are far from the .05 that means we can reject the null hypothesis. Which means the drug works.
+
+
+###Male
+
+##Results
+
+This is the results we got for the males, we have two subdivisions for the results. First the graphical data containing a bar graph. Then the numerical data where we have the basic numerical data and some more advanced inferential data I.E a chisqtest and a fisher.t test.
+
+
+## Descriptive Results
+
+### Graphical Descriptive Results
+
+
+  
+```{r}
+resultsMale <- xtabs(~infected+treatment,data=male)
+barchartGC(resultsMale,type = "percent")
+```
+
+Based on this graph of the males there is less people who took the drug and have aids, altnough there is more than the graph prior with the drug users. The highest percentage of people who have aids took the placebo. While the people who dont have aids is almost exactly even for the drug versus the placebo. 
+
+### Numerical Descriptive Results
+
+
+
+```{r}
+colPerc(resultsMale)
+rowPerc(resultsMale)
+```
+
+According to these statstical results from colperc it shows that 4.14% that took the drug ended up with aids, while 95.86% didn't. Then 8.92% who took the placebo ended up with aids while 91.08% didnt. Then in the rowperc test it shows that 30.46% of people with aids took the drug while 69.54% of people took the placebo. Then 49.86% of people who dont have aids took the drug while 50.14% took the placebo.
+
+## Inferential Results
+
+
+```{r}
+chisqtestGC(resultsMale, graph = TRUE)
+fisher.test(resultsMale)
+```
+
+According to the chi-squared test it shows that 46 people who took the drug ended up with aids while 1066 did not have aids. Then 105 people who took the placebo ended up with aids while 1072 did not. The chi-squared test also gave us a p-value of 0 which is enough to reject the null hypothesis. Although, we want to make sure of the p-value so that's where the fisher test come in and gives us a p-value of 0.000004 which means we can reject the null hypothesis.
+
+
+# Discussion and Conclusion
+
+If we just look at the bar graph it seems that the drug works, even better than the graph of the whole and almost as good as it did with the drug users. Although, we need to take a closer look at the data to make sure what we are seeing is really true, because often times graphs can be very misleading. According to very basic statistical data shows that 30.46% of people with aids took the drug while 69.54%% of people took the placebo. Now that's roughly about 40% difference. Let's dig a little bit deeper 46 out of 1112 people who took the drug ended up with aids. While 105 out of 1177 people who took the placebo ended up with aids. Now that shows that the drug is working right? Lets keep going according to the Chi-squared test we have a p-value of 0 and the fisher test gives off a p-value of 0.000004. Both these values are far from the .05 that means we can reject the null hypothesis. Which means the drug works.
+
+
+###Female
+
+##Results
+
+This is the results we got for the Females, we have two subdivisions for the results. First the graphical data containing a bar graph. Then the numerical data where we have the basic numerical data and some more advanced inferential data I.E a chisqtest and a fisher.t test.
+
+
+## Descriptive Results
+
+### Graphical Descriptive Results
+
+
+  
+```{r}
+resultsFemale <- xtabs(~infected+treatment,data=female)
+barchartGC(resultsFemale,type = "percent")
+```
+
+Based on this graph of the females there is less people who took the drug and have aids, even less then the males in the graph before. The highest percentage of people who have aids took the placebo. While the people who dont have aids is pretty close with about a 10% diffrence for the drug versus the placebo. 
+
+### Numerical Descriptive Results
+
+
+
+```{r}
+colPerc(resultsFemale)
+rowPerc(resultsFemale)
+```
+
+According to these statstical results from colperc it shows that 3.96% that took the drug ended up with aids, while 96.04% didn't. Then 2.59% who took the placebo ended up with aids while 97.41% didnt. Then in the rowperc test it shows that 59.30% of people with aids took the drug while 40.70% of people took the placebo. Then 48.47% of people who dont have aids took the drug while 51.53% took the placebo.
+
+## Inferential Results
+
+
+```{r}
+chisqtestGC(resultsFemale, graph = TRUE)
+fisher.test(resultsFemale)
+```
+
+According to the chi-squared test it shows that 51 people who took the drug ended up with aids while 1237 did not have aids. Then 35 people who took the placebo ended up with aids while 1315 did not. The chi-squared test also gave us a p-value of 0.062 which is not enough to reject the null hypothesis. Although, we want to make sure of the p-value so that's where the fisher test come in and gives us a p-value of 0.04911 which means we can't reject the null hypothesis.
+
+
+# Discussion and Conclusion
+
+If we just look at the bar graph it seems that the drug does not work. Although, we need to take a closer look at the data to make sure what we are seeing is really true, because this is the first time the drug appers to be less affective. According to very basic statistical data shows that 59.3% of people with aids took the drug while 40.7%% of people took the placebo. Now that's roughly about 19% difference. Let's dig a little bit deeper 51 out of 1288 people who took the drug ended up with aids. While 35 out of 1350 people who took the placebo ended up with aids. This is the first case where the drug has more people with aids . Lets keep going according to the Chi-squared test we have a p-value of 0.062 and the fisher test gives off a p-value of 0.049. One of the vaules is over our .05 vaule and one is right at it. This means we can't reject the null hypothesis. Which means the drug does not work.
+
+###LGBT
+
+This is the results we got for the LGBT community, we have two subdivisions for the results. First the graphical data containing a bar graph. Then the numerical data where we have the basic numerical data and some more advanced inferential data I.E a chisqtest and a fisher.t test.
+
+##Results
+
+## Descriptive Results
+
+### Graphical Descriptive Results
+
+
+  
+```{r}
+resultsLGBT<- xtabs(~infected+treatment,data=LGBT)
+barchartGC(resultsLGBT,type = "percent")
+```
+
+Based on this graph of the LGBT community there is less people who took the drug and have aids, its about even with the males graph before. The highest percentage of people who have aids took the placebo. While the people who dont have aids is almost identical for the drug versus the placebo. 
+
+### Numerical Descriptive Results
+
+
+
+```{r}
+colPerc(resultsLGBT)
+rowPerc(resultsLGBT)
+```
+
+According to these statstical results from colperc it shows that 6.51% that took the drug ended up with aids, while 93.49% didn't. Then 3.06% who took the placebo ended up with aids while 96.94% didnt. Then in the rowperc test it shows that 68.97% of people with aids took the drug while 31.03% of people took the placebo. Then 50.17% of people who dont have aids took the drug while 49.83% took the placebo.
+
+## Inferential Results
+
+
+```{r}
+chisqtestGC(resultsLGBT, graph = TRUE)
+fisher.test(resultsLGBT)
+```
+
+According to the chi-squared test it shows that 20 people who took the drug ended up with aids while 287 did not have aids. Then 9 people who took the placebo ended up with aids while 285 did not. The chi-squared test also gave us a p-value of 0.0743 which is not enough to reject the null hypothesis. Although, we want to make sure of the p-value so that's where the fisher test come in and gives us a p-value of 0.05698 which means we can't reject the null hypothesis.
+
+
+# Discussion and Conclusion
+
+Now this is another case where the drug does not seem to be work. looking at the bar graph it seems that the drug does not work. Although, we need to take a closer look at the data to make sure what we are seeing is really true. According to the statistical data shows that 68.97% of people with aids took the drug while 31.03%% of people took the placebo. Now that's roughly about 37% difference. Let's dig a little bit deeper 20 out of 307 people who took the drug ended up with aids. While 9 out of 294 people who took the placebo ended up with aids. Lets keep going according to the Chi-squared test we have a p-value of 0.074 and the fisher test gives off a p-value of 0.0569. Both of the p-vaules is over our .05 vaule. This means we can't reject the null hypothesis. Which means the drug does not work.This just goes to show you, something that works for the whole may not work for everyone.
